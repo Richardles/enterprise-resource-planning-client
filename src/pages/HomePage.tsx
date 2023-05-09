@@ -62,7 +62,20 @@ const HomePage = (props: Props) => {
       employeeEmail: currentUser.email,
       clockInTime: new Date().toLocaleTimeString() || '0',
       clockOutTime: '-',
-      attendDate: new Date().toUTCString() || '0',
+      attendDate: new Date().toLocaleDateString() || '0',
+      description: activityDescription
+    }).then((res)=>{
+      console.log(res);
+    })
+  }
+
+  const clockOut = ()=>{
+    Axios.post('http://localhost:3001/updateOneAttendance', {
+      employeeId: currentUser._id,
+      employeeEmail: currentUser.email,
+      clockInTime: '-',
+      clockOutTime: new Date().toLocaleTimeString() || '0',
+      attendDate: new Date().toLocaleDateString() || '0',
       description: activityDescription
     }).then((res)=>{
       console.log(res);
@@ -300,6 +313,7 @@ const HomePage = (props: Props) => {
                 <button
                   type="button"
                   className="inline-flex items-center px-6 py-3 border border-gray-300 shadow text-base font-medium rounded-md text-white bg-rose-600 hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  onClick={clockOut}
                 >
                   Clock Out
                 </button>

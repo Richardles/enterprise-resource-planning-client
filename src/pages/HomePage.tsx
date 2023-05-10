@@ -1,5 +1,6 @@
 import {Fragment, useState, useEffect} from 'react'
 import { Dialog, Transition } from '@headlessui/react'
+import Clock from 'react-live-clock';
 import {
     CalendarIcon,
     ChartBarIcon,
@@ -9,16 +10,12 @@ import {
     Bars3Icon,
     UsersIcon,
     XMarkIcon,
+    ArrowRightOnRectangleIcon,
   } from '@heroicons/react/24/outline'
 import Axios from 'axios'
 
   const navigation = [
     { name: 'Dashboard', href: '#', icon: HomeIcon, current: true },
-    { name: 'Team', href: '#', icon: UsersIcon, current: false },
-    { name: 'Projects', href: '#', icon: FolderIcon, current: false },
-    { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
-    { name: 'Documents', href: '#', icon: InboxIcon, current: false },
-    { name: 'Reports', href: '#', icon: ChartBarIcon, current: false },
   ]
 
   const stats = [
@@ -26,17 +23,6 @@ import Axios from 'axios'
     { label: 'Sick days left', value: 4 },
     { label: 'Personal days left', value: 2 },
   ]
-
-  const attendance_stats = [
-    { name: 'Total Subscribers', stat: '71,897' },
-    { name: 'Avg. Open Rate', stat: '58.16%' },
-    { name: 'Avg. Click Rate', stat: '24.57%' },
-  ]
-
-  // const attendanceData = [
-  //   // { attendanceId: 1, attendDate: 'Jane Cooper', clockInTime: 'Regional Paradigm Technician', clockOutTime: 'Admin', description: 'jane.cooper@example.com' },
-  //   // { name: 'Cody Fisher', title: 'Product Directives Officer', role: 'Owner', email: 'cody.fisher@example.com' },
-  // ]
 
   const currentUser = JSON.parse(sessionStorage.getItem('currentUser') || '{}')
   
@@ -99,6 +85,11 @@ const HomePage = (props: Props) => {
       console.log(res);
       getAttendanceByEmail()
     })
+  }
+
+  const signOut = ()=>{
+    sessionStorage.removeItem('currentUser')
+    window.location.href = '/'
   }
 
   return (
@@ -182,19 +173,29 @@ const HomePage = (props: Props) => {
                 </nav>
               </div>
               <div className="flex-shrink-0 flex bg-gray-700 p-4">
-                <a href="#" className="flex-shrink-0 group block">
-                  <div className="flex items-center">
-                    <div>
-                      <img
-                        className="inline-block h-10 w-10 rounded-full"
-                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                        alt=""
-                      />
+                <a href="#" className="flex-shrink-0 w-full group block">
+                  <div className="flex items-center justify-between">
+                    <div className='flex items-center'>
+                      <div>
+                        <img
+                          className="inline-block h-10 w-10 rounded-full object-cover"
+                          src={currentUser.profileImage}
+                          alt=""
+                        />
+                      </div>
+                      <div className="ml-3">
+                        <p className="text-base font-medium text-white">{currentUser.fullName}</p>
+                        <p className="text-sm font-medium text-gray-400">{currentUser.email}</p>
+                      </div>
                     </div>
-                    <div className="ml-3">
-                      <p className="text-base font-medium text-white">{currentUser.fullName}</p>
-                      <p className="text-sm font-medium text-gray-400 group-hover:text-gray-300">View profile</p>
-                    </div>
+                    <button
+                      type="button"
+                      className="flex-shrink-0 p-1 text-cyan-200 rounded-full hover:text-white hover:bg-white hover:bg-opacity-10 focus:outline-none focus:ring-2 focus:ring-white"
+                      onClick={signOut}
+                    >
+                      <span className="sr-only">Sign out</span>
+                      <ArrowRightOnRectangleIcon className="h-6 w-6 text-white" aria-hidden="true" />
+                    </button>
                   </div>
                 </a>
               </div>
@@ -241,18 +242,28 @@ const HomePage = (props: Props) => {
             </div>
             <div className="flex-shrink-0 flex bg-gray-700 p-4">
               <a href="#" className="flex-shrink-0 w-full group block">
-                <div className="flex items-center">
-                  <div>
-                    <img
-                      className="inline-block h-9 w-9 rounded-full"
-                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                      alt=""
-                    />
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <div>
+                      <img
+                        className="inline-block h-9 w-9 rounded-full object-cover"
+                        src={currentUser.profileImage}
+                        alt=""
+                      />
+                    </div>
+                    <div className="ml-3">
+                      <p className="text-sm font-medium text-white">{currentUser.fullName}</p>
+                      <p className="text-xs font-medium text-gray-300">{currentUser.email}</p>
+                    </div>
                   </div>
-                  <div className="ml-3">
-                    <p className="text-sm font-medium text-white">{currentUser.fullName}</p>
-                    <p className="text-xs font-medium text-gray-300 group-hover:text-gray-200">{currentUser.email}</p>
-                  </div>
+                  <button
+                    type="button"
+                    className="flex-shrink-0 p-1 text-cyan-200 rounded-full hover:text-white hover:bg-white hover:bg-opacity-10 focus:outline-none focus:ring-2 focus:ring-white"
+                    onClick={signOut}
+                  >
+                    <span className="sr-only">Sign out</span>
+                    <ArrowRightOnRectangleIcon className="h-6 w-6 text-white" aria-hidden="true" />
+                  </button>
                 </div>
               </a>
             </div>
@@ -281,7 +292,7 @@ const HomePage = (props: Props) => {
                   <div className="sm:flex sm:items-center sm:justify-between">
                     <div className="sm:flex sm:space-x-5">
                       <div className="flex-shrink-0">
-                        <img className="mx-auto h-20 w-20 rounded-full" src={currentUser.imageUrl} alt="" />
+                        <img className="mx-auto h-20 w-20 rounded-full object-cover" src={currentUser.profileImage} alt="" />
                       </div>
                       <div className="mt-4 text-center sm:mt-0 sm:pt-1 sm:text-left">
                         <p className="text-sm font-medium text-gray-600">Welcome back,</p>
@@ -310,7 +321,15 @@ const HomePage = (props: Props) => {
               </div>
               {/* Clock In / Out */}
               <div className="my-5">
-                <h3 className="text-lg leading-6 font-medium text-gray-900">Clock In and Clock Out</h3>
+                <div className="flex flex-col items-center">
+                  <div>
+                    <span className="font-semibold text-xl"><Clock format={'h:mm:ss A'} ticking={true} timezone={'Asia/Jakarta'}/></span>
+                  </div>
+                  <div>
+                    <span className="font-semibold"><Clock format={'dddd, MMMM Mo YYYY'} ticking={true} timezone={'Asia/Jakarta'}/></span>
+                  </div>
+                </div>
+
                 <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
                 <button
                   type="button"

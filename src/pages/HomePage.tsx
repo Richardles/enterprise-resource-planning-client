@@ -54,7 +54,14 @@ const HomePage = (props: Props) => {
 
   useEffect(()=>{
     console.log(activityDescription);
-  },[activityDescription])
+    Axios.post('http://localhost:3001/getAttendanceByEmail', {
+      employeeId: currentUser._id,
+      employeeEmail: currentUser.email,
+    }).then((res)=>{
+      console.log(res.data);
+      setAttendanceData(res.data);
+    })
+  },[])
 
   const getAttendanceByEmail = ()=>{
     Axios.post('http://localhost:3001/getAttendanceByEmail', {
@@ -76,6 +83,7 @@ const HomePage = (props: Props) => {
       description: activityDescription
     }).then((res)=>{
       console.log(res);
+      getAttendanceByEmail()
     })
   }
 
@@ -89,6 +97,7 @@ const HomePage = (props: Props) => {
       description: activityDescription
     }).then((res)=>{
       console.log(res);
+      getAttendanceByEmail()
     })
   }
 
@@ -365,14 +374,14 @@ const HomePage = (props: Props) => {
                           </tr>
                         </thead>
                         <tbody>
-                          {/* {attendanceData.map((attendance, attendanceIdx) => (
+                          {attendanceData.map((attendance:any, attendanceIdx:number) => (
                             <tr key={attendance._id} className={attendanceIdx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{attendance.attendDate}</td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{attendance.clockInTime}</td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{attendance.clockOutTime}</td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{attendance.description}</td>
                             </tr>
-                          ))} */}
+                          ))}
                         </tbody>
                       </table>
                     </div>

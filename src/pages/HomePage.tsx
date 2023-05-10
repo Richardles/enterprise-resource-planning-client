@@ -33,11 +33,10 @@ import Axios from 'axios'
     { name: 'Avg. Click Rate', stat: '24.57%' },
   ]
 
-  const attendanceData = [
-    { name: 'Jane Cooper', title: 'Regional Paradigm Technician', role: 'Admin', email: 'jane.cooper@example.com' },
-    { name: 'Cody Fisher', title: 'Product Directives Officer', role: 'Owner', email: 'cody.fisher@example.com' },
-    // More people...
-  ]
+  // const attendanceData = [
+  //   // { attendanceId: 1, attendDate: 'Jane Cooper', clockInTime: 'Regional Paradigm Technician', clockOutTime: 'Admin', description: 'jane.cooper@example.com' },
+  //   // { name: 'Cody Fisher', title: 'Product Directives Officer', role: 'Owner', email: 'cody.fisher@example.com' },
+  // ]
 
   const currentUser = JSON.parse(sessionStorage.getItem('currentUser') || '{}')
   
@@ -51,10 +50,21 @@ const HomePage = (props: Props) => {
 
   const [activityDescription, setActivityDescription] = useState('')
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [attendanceData, setAttendanceData] = useState([])
 
   useEffect(()=>{
     console.log(activityDescription);
   },[activityDescription])
+
+  const getAttendanceByEmail = ()=>{
+    Axios.post('http://localhost:3001/getAttendanceByEmail', {
+      employeeId: currentUser._id,
+      employeeEmail: currentUser.email,
+    }).then((res)=>{
+      console.log(res.data);
+      setAttendanceData(res.data);
+    })
+  }
 
   const clockIn = ()=>{
     Axios.post('http://localhost:3001/insertAttendance', {
@@ -274,6 +284,7 @@ const HomePage = (props: Props) => {
                       <a
                         href="#"
                         className="flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                        onClick={getAttendanceByEmail}
                       >
                         View profile
                       </a>
@@ -317,12 +328,6 @@ const HomePage = (props: Props) => {
                 >
                   Clock Out
                 </button>
-                  {/* {attendance_stats.map((item) => (
-                    <div key={item.name} className="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
-                      <dt className="text-sm font-medium text-gray-500 truncate">{item.name}</dt>
-                      <dd className="mt-1 text-3xl font-semibold text-gray-900">{item.stat}</dd>
-                    </div>
-                  ))} */}
                 </dl>
               </div>
               { /* Attendance Table */ }
@@ -360,14 +365,14 @@ const HomePage = (props: Props) => {
                           </tr>
                         </thead>
                         <tbody>
-                          {attendanceData.map((attendance, attendanceIdx) => (
-                            <tr key={attendance.email} className={attendanceIdx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{attendance.name}</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{attendance.title}</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{attendance.email}</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{attendance.role}</td>
+                          {/* {attendanceData.map((attendance, attendanceIdx) => (
+                            <tr key={attendance._id} className={attendanceIdx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{attendance.attendDate}</td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{attendance.clockInTime}</td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{attendance.clockOutTime}</td>
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{attendance.description}</td>
                             </tr>
-                          ))}
+                          ))} */}
                         </tbody>
                       </table>
                     </div>

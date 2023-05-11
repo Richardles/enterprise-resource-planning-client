@@ -300,6 +300,15 @@ const HomePage = (props: Props) => {
           <div className="py-6">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
               {/* Replace with your content */}
+              <div className="flex flex-col items-end my-4">
+                <div>
+                  <span className="font-semibold text-lg"><Clock format={'h:mm:ss A'} ticking={true} timezone={'Asia/Jakarta'}/></span>
+                </div>
+                <div>
+                  <span className="font-semibold"><Clock format={'dddd, MMMM Mo YYYY'} ticking={true} timezone={'Asia/Jakarta'}/></span>
+                </div>
+              </div>
+
               <div className="rounded-lg bg-white overflow-hidden shadow">
                 <h2 className="sr-only" id="profile-overview-title">
                   Profile Overview
@@ -337,15 +346,6 @@ const HomePage = (props: Props) => {
               </div>
               {/* Clock In / Out */}
               <div className="my-5">
-                <div className="flex flex-col items-center">
-                  <div>
-                    <span className="font-semibold text-xl"><Clock format={'h:mm:ss A'} ticking={true} timezone={'Asia/Jakarta'}/></span>
-                  </div>
-                  <div>
-                    <span className="font-semibold"><Clock format={'dddd, MMMM Mo YYYY'} ticking={true} timezone={'Asia/Jakarta'}/></span>
-                  </div>
-                </div>
-
                 <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
                 <button
                   type="button"

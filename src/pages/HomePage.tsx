@@ -1,6 +1,7 @@
 import {Fragment, useState, useEffect} from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import Clock from 'react-live-clock';
+import Logo from '../assets/logo/logo2.png'
 import {
     CalendarIcon,
     ChartBarIcon,
@@ -15,7 +16,7 @@ import {
 import Axios from 'axios'
 
   const navigation = [
-    { name: 'Dashboard', href: '#', icon: HomeIcon, current: true },
+    { name: 'Dashboard', href: '/home', icon: HomeIcon, current: true },
   ]
 
   const stats = [
@@ -34,57 +35,72 @@ type Props = {}
 
 const HomePage = (props: Props) => {
 
+  interface IUser{
+    _id: String,
+    email: String,
+    profileImage: String,
+    fullName: String
+  }
+
+  // const [currentUser, setCurrentUser] = useState<IUser>()
   const [activityDescription, setActivityDescription] = useState('')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [attendanceData, setAttendanceData] = useState([])
 
   useEffect(()=>{
+    // setCurrentUser(JSON.parse(sessionStorage.getItem('currentUser') || '{}'))
     console.log(activityDescription);
     Axios.post('http://localhost:3001/getAttendanceByEmail', {
-      employeeId: currentUser._id,
-      employeeEmail: currentUser.email,
-    }).then((res)=>{
-      console.log(res.data);
-      setAttendanceData(res.data);
-    })
+        employeeId: currentUser?._id,
+        employeeEmail: currentUser?.email,
+      }).then((res)=>{
+        console.log(res.data);
+        setAttendanceData(res.data);
+      })
   },[])
 
   const getAttendanceByEmail = ()=>{
-    Axios.post('http://localhost:3001/getAttendanceByEmail', {
-      employeeId: currentUser._id,
-      employeeEmail: currentUser.email,
-    }).then((res)=>{
-      console.log(res.data);
-      setAttendanceData(res.data);
-    })
+    if(currentUser != null){
+      Axios.post('http://localhost:3001/getAttendanceByEmail', {
+        employeeId: currentUser._id,
+        employeeEmail: currentUser.email,
+      }).then((res)=>{
+        console.log(res.data);
+        setAttendanceData(res.data);
+      })
+    }
   }
 
   const clockIn = ()=>{
-    Axios.post('http://localhost:3001/insertAttendance', {
-      employeeId: currentUser._id,
-      employeeEmail: currentUser.email,
-      clockInTime: new Date().toLocaleTimeString() || '0',
-      clockOutTime: '-',
-      attendDate: new Date().toLocaleDateString() || '0',
-      description: activityDescription
-    }).then((res)=>{
-      console.log(res);
-      getAttendanceByEmail()
-    })
+    if(currentUser != null){
+      Axios.post('http://localhost:3001/insertAttendance', {
+        employeeId: currentUser._id,
+        employeeEmail: currentUser.email,
+        clockInTime: new Date().toLocaleTimeString() || '0',
+        clockOutTime: '-',
+        attendDate: new Date().toLocaleDateString() || '0',
+        description: activityDescription
+      }).then((res)=>{
+        console.log(res);
+        getAttendanceByEmail()
+      })
+    }
   }
 
   const clockOut = ()=>{
-    Axios.post('http://localhost:3001/updateOneAttendance', {
-      employeeId: currentUser._id,
-      employeeEmail: currentUser.email,
-      clockInTime: '-',
-      clockOutTime: new Date().toLocaleTimeString() || '0',
-      attendDate: new Date().toLocaleDateString() || '0',
-      description: activityDescription
-    }).then((res)=>{
-      console.log(res);
-      getAttendanceByEmail()
-    })
+    if(currentUser != null){
+      Axios.post('http://localhost:3001/updateOneAttendance', {
+        employeeId: currentUser._id,
+        employeeEmail: currentUser.email,
+        clockInTime: '-',
+        clockOutTime: new Date().toLocaleTimeString() || '0',
+        attendDate: new Date().toLocaleDateString() || '0',
+        description: activityDescription
+      }).then((res)=>{
+        console.log(res);
+        getAttendanceByEmail()
+      })
+    }
   }
 
   const signOut = ()=>{
@@ -146,7 +162,7 @@ const HomePage = (props: Props) => {
                 <div className="flex-shrink-0 flex items-center px-4">
                   <img
                     className="h-8 w-auto"
-                    src="/img/logos/workflow-logo-indigo-500-mark-white-text.svg"
+                    src={Logo}
                     alt="Workflow"
                   />
                 </div>
@@ -179,13 +195,13 @@ const HomePage = (props: Props) => {
                       <div>
                         <img
                           className="inline-block h-10 w-10 rounded-full object-cover"
-                          src={currentUser.profileImage}
+                          src={currentUser ? currentUser.profileImage as string : ""}
                           alt=""
                         />
                       </div>
                       <div className="ml-3">
-                        <p className="text-base font-medium text-white">{currentUser.fullName}</p>
-                        <p className="text-sm font-medium text-gray-400">{currentUser.email}</p>
+                        <p className="text-base font-medium text-white">{currentUser ? currentUser.fullName : '-'}</p>
+                        <p className="text-sm font-medium text-gray-400">{currentUser ? currentUser.email : '-'}</p>
                       </div>
                     </div>
                     <button
@@ -214,7 +230,7 @@ const HomePage = (props: Props) => {
               <div className="flex items-center flex-shrink-0 px-4">
                 <img
                   className="h-8 w-auto"
-                  src="/img/logos/workflow-logo-indigo-500-mark-white-text.svg"
+                  src={Logo}
                   alt="Workflow"
                 />
               </div>
@@ -247,13 +263,13 @@ const HomePage = (props: Props) => {
                     <div>
                       <img
                         className="inline-block h-9 w-9 rounded-full object-cover"
-                        src={currentUser.profileImage}
+                        src={currentUser ? currentUser.profileImage as string : ""}
                         alt=""
                       />
                     </div>
                     <div className="ml-3">
-                      <p className="text-sm font-medium text-white">{currentUser.fullName}</p>
-                      <p className="text-xs font-medium text-gray-300">{currentUser.email}</p>
+                      <p className="text-sm font-medium text-white">{currentUser ? currentUser.fullName : '-'}</p>
+                      <p className="text-xs font-medium text-gray-300">{currentUser ? currentUser.email : '-'}</p>
                     </div>
                   </div>
                   <button
@@ -292,12 +308,12 @@ const HomePage = (props: Props) => {
                   <div className="sm:flex sm:items-center sm:justify-between">
                     <div className="sm:flex sm:space-x-5">
                       <div className="flex-shrink-0">
-                        <img className="mx-auto h-20 w-20 rounded-full object-cover" src={currentUser.profileImage} alt="" />
+                        <img className="mx-auto h-20 w-20 rounded-full object-cover" src={currentUser ? currentUser.profileImage as string : ""} alt="" />
                       </div>
                       <div className="mt-4 text-center sm:mt-0 sm:pt-1 sm:text-left">
                         <p className="text-sm font-medium text-gray-600">Welcome back,</p>
-                        <p className="text-xl font-bold text-gray-900 sm:text-2xl">{currentUser.fullName}</p>
-                        <p className="text-sm font-medium text-gray-600">{currentUser.email}</p>
+                        <p className="text-xl font-bold text-gray-900 sm:text-2xl">{currentUser ? currentUser.fullName : '-'}</p>
+                        <p className="text-sm font-medium text-gray-600">{currentUser ? currentUser.email : '-'}</p>
                       </div>
                     </div>
                     <div className="mt-5 flex justify-center sm:mt-0">

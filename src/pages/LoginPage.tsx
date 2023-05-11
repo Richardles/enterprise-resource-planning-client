@@ -1,17 +1,13 @@
 import React from 'react'
 import Axios from 'axios'
+import { useNavigate } from 'react-router-dom'
+import Logo from '../assets/logo/logo2.png'
 
 type Props = {}
 
 const LoginPage = (props: Props) => {
 
-  interface userObject{
-    _id: string
-    fullName: string
-    email: string
-    birthday: string
-    password: string
-  }
+  const navigate = useNavigate()
 
   const handleLogin = (e: any)=>{
     e.preventDefault()
@@ -22,9 +18,9 @@ const LoginPage = (props: Props) => {
       password: e.target.password.value,
     }).then((res)=>{
       if(res.data != "hold"){
-        sessionStorage.setItem('currentUser', JSON.stringify(res.data))        
-        window.location.href = '/home'
-        // window.location.assign('/home')
+        sessionStorage.setItem('currentUser', JSON.stringify(res.data))      
+        // navigate('/home')
+        window.location.assign('/home')
       }
     })
   }
@@ -33,8 +29,8 @@ const LoginPage = (props: Props) => {
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <img
-          className="mx-auto h-12 w-auto"
-          src="/img/logos/workflow-mark-indigo-600.svg"
+          className="mx-auto h-24 w-auto object-cover rounded"
+          src={Logo}
           alt="Logo here"
         />
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
